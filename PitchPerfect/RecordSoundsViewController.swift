@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
+class RecordSoundsViewController: UIViewController {
     
     var audioRecorder: AVAudioRecorder!
     
@@ -36,8 +36,12 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         stopRecordingButton.isEnabled = recording
         feedbackMsg.text = recording ? "Recording in progress" : "Tap the mic to make sweet sweet music"
     }
+
+}
+
+// MARK: AVAudioRecorderDelegate extension
+extension RecordSoundsViewController: AVAudioRecorderDelegate {
     
-    // MARK: AVAudioRecorderDelegate methods
     @IBAction func recordAudio(_ sender: AnyObject) {
         buttonToggle(true)
         
@@ -74,6 +78,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
         
     }
-
+    
 }
+
 
