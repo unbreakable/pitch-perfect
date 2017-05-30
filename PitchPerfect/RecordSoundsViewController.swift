@@ -22,10 +22,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         stopRecordingButton.isEnabled = false
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "stopRecording") {
             let playSoundsVC = segue.destination as! PlaySoundsViewController
@@ -74,7 +70,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             print("recording was not successful")
             let alert = UIAlertController(title: "Recording failed", message: "Something went horribly wrong", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "Damn", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
         
     }
