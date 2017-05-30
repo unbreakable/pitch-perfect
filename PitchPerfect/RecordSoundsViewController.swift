@@ -17,7 +17,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         stopRecordingButton.isEnabled = false
@@ -27,6 +26,22 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         super.viewWillAppear(animated)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "stopRecording") {
+            let playSoundsVC = segue.destination as! PlaySoundsViewController
+            let recordedAudioURL = sender as! NSURL
+            playSoundsVC.recordedAudioURL = recordedAudioURL as URL!
+        }
+    }
+    
+    // MARK: Abstracted duplicate code
+    func buttonToggle(_ recording: Bool) {
+        recordButton.isEnabled = !recording
+        stopRecordingButton.isEnabled = recording
+        feedbackMsg.text = recording ? "Recording in progress" : "Tap the mic to make sweet sweet music"
+    }
+    
+    // MARK: AVAudioRecorderDelegate methods
     @IBAction func recordAudio(_ sender: AnyObject) {
         buttonToggle(true)
         
@@ -34,7 +49,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         let recordingName = "recordedVoice.wav"
         let pathArray = [dirPath, recordingName]
         let filePath = URL(string: pathArray.joined(separator: "/"))
-    
+        
         let session = AVAudioSession.sharedInstance()
         try! session.setCategory(AVAudioSessionCategoryPlayAndRecord, with:AVAudioSessionCategoryOptions.defaultToSpeaker)
         
@@ -57,30 +72,11 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
         } else {
             print("recording was not successful")
+            let alert = UIAlertController(title: "Recording failed", message: "Something went horribly wrong", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Damn", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
-    
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "stopRecording") {
-            let playSoundsVC = segue.destination as! PlaySoundsViewController
-            let recordedAudioURL = sender as! NSURL
-            playSoundsVC.recordedAudioURL = recordedAudioURL as URL!
-        }
-    }
-    
-    // This is my sample of abstracted code to adjust button function and on-screen messages
-    func buttonToggle(_ recording: Bool) {
-        if recording {
-            feedbackMsg.text = "Recording in progress"
-            recordButton.isEnabled = false
-            stopRecordingButton.isEnabled = true
-        } else {
-            feedbackMsg.text = "Tap the mic to make sweet sweet music"
-            recordButton.isEnabled = true
-            stopRecordingButton.isEnabled = false
-        }
-    
+        
     }
 
 }
